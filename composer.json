@@ -1,0 +1,13 @@
+{
+    "name": "antohaby/ieee754",
+    "description": "IEEE 754 Implementation in pure PHP",
+    "type": "library",
+    "require": {
+        "php": ">=5.3"
+    },
+    "license": "mit",
+    "minimum-stability": "stable",
+    "autoload": {
+        "files": [ "src/ieee754.php" ]
+    }
+}
