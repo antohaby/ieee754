@@ -1,38 +1,40 @@
 <?php declare(strict_types=1);
 
-
-function ieee754(int $v): float
+/**
+ * @param int $v
+ * @return float|string
+ */
+function binary32(int $v) : float
 {
     assert($v >= 0, 'Value must not be negative');
     assert($v <= 0xFFFFFFFF, 'Value must be 4-byte');
 
     $sign = ($v & 0x80000000) > 0 ? -1 : 1;
-    $exp = (($v & 0x7F800000) >> 23) - 127;
+    $exp = (($v & 0x7F800000) >> 23);
     $mantis = ($v & 0x7FFFFF);
-    if ($mantis == 0 && $exp == -127) {
+
+    if ($mantis == 0 && $exp == 0) {
         return 0;
     }
-
-    $mantis |= 0x800000;
-    $pos = 0x800000;
-
-    $res = .0;
-    while ($mantis > 0) {
-
-        if ($mantis & $pos) {
-            $res += pow(2, $exp);
-            $mantis -= $pos;
-        }
-
-        $pos >>= 1;
-        $exp--;
+    if ($exp == 255) {
+        if ($mantis == 0) return INF;
+        if ($mantis != 0) return NAN;
     }
 
-    return $sign * $res;
+    if ($exp == 0) {
+        $mantis /= 0x800000;
+        return $sign * pow(2, -126) * $mantis;
+    } else {
+        $mantis |= 0x800000;
+        $mantis /= 0x800000;
+        return $sign * pow(2,$exp - 127) * $mantis;
+    }
+
 }
+
 
 $hex = $_GET['v'] ?? null;
 if ($hex === null) die("Use get parameter 'v' to pass 4-byte hex value. Example: <a href='/?v=447A0000'>447A0000</a>");
 assert(preg_match('/[0-9a-fA-F]{8}/', $hex), 'Parameter v must be valid hex value with 4 bytes');
 
-print ieee754(hexdec($hex));
+print binary32(hexdec($hex));
