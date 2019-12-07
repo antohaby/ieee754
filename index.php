@@ -32,6 +32,7 @@ function ieee754(int $v): float
 }
 
 $hex = $_GET['v'] ?? null;
-if ($hex === null) die("Use get parameter v to calc the value: <a href='/?v=447A0000'>447A0000</a>");
+if ($hex === null) die("Use get parameter 'v' to pass 4-byte hex value. Example: <a href='/?v=447A0000'>447A0000</a>");
+assert(preg_match('/[0-9a-fA-F]{8}/', $hex), 'Parameter v must be valid hex value with 4 bytes');
 
-
+print ieee754(hexdec($hex));
