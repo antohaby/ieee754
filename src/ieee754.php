@@ -1,19 +1,24 @@
 <?php declare(strict_types=1);
 
-
+namespace Antohaby\Ieee754;
 
 /**
- * @param int $v
- * @return float|string
+ * Decodes binary in IEEE 754 Single-precision floating point format
+ * to float number
+ *
+ * @example binary32Decode(hexdec('40490fdb')) // 3.14159274101
+ *
+ * @param int $bin
+ * @return float
  */
-function binary32(int $v) : float
+function binary32Decode(int $bin) : float
 {
-    assert($v >= 0, 'Value must not be negative');
-    assert($v <= 0xFFFFFFFF, 'Value must be 4-byte');
+    assert($bin >= 0, 'Value must not be negative');
+    assert($bin <= 0xFFFFFFFF, 'Value must be 4-byte');
 
-    $sign = ($v & 0x80000000) > 0 ? -1 : 1;
-    $exp = (($v & 0x7F800000) >> 23);
-    $mantis = ($v & 0x7FFFFF);
+    $sign = ($bin & 0x80000000) > 0 ? -1 : 1;
+    $exp = (($bin & 0x7F800000) >> 23);
+    $mantis = ($bin & 0x7FFFFF);
 
     if ($mantis == 0 && $exp == 0) {
         return 0;
